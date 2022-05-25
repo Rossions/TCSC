@@ -3,7 +3,7 @@ import sys
 import optparse
 from sumolib import checkBinary
 import traci
-from get_roadinfo import get_road_info
+from observation import get_road_info
 
 if 'SUMO_HOME' in os.environ:
     tools = os.path.join(os.environ['SUMO_HOME'], 'tools')

@@ -3,7 +3,6 @@ import os
 import sys
 import optparse
 from sumolib import checkBinary
-from get_roadinfo import get_road_info
 
 
 # 判断sumo接口是否存在
@@ -14,16 +13,6 @@ def get_options():
     options, args = optParser.parse_args()
     return options
 
-
-def traffic_light_state(tl_id):
-    """
-    获取当前红绿灯状态
-    :param tl_id:
-    :return:
-    """
-    traci.trafficlight.getPhase(tl_id)
-    traci.trafficlight.getAllProgramLogics(tl_id)
-    return traci.trafficlight.getRedYellowGreenState(tl_id)
 
 
 class SumoEnvironment(object):
@@ -51,15 +40,15 @@ class SumoEnvironment(object):
     # reward (浮点数) : 智能体执行动作a后获得的奖励
     # done (布尔值): 判断episode是否结束，即s’是否是最终状态？是，则done=True；否，则done=False。
     # info (字典): 一些辅助诊断信息（有助于调试，也可用于学习），一般用不到。
-    def step(self, action):
+    def step(self, tls_id, action_phase, phase_duration):
         # action = 0 信号灯相位不变；action = 1 信号灯相位改变
-        if action == 1:
-            pass
+        traci.trafficlight.setPhase(tls_id, action_phase)
+        traci.trafficlight.setPhaseDuration(tls_id, phase_duration)
         traci.simulationStep()
         done = traci.simulation.getMinExpectedNumber() > 0
         info = traci.simulation.getTime()
         observation = get_road_info()
-        reward = 0
+        reward = None
         return observation, reward, done, info
 
     def sumo_close(self):
