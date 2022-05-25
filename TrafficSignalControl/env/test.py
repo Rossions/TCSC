@@ -3,7 +3,6 @@ import sys
 import optparse
 from sumolib import checkBinary
 import traci
-from observation import get_road_info
 
 if 'SUMO_HOME' in os.environ:
     tools = os.path.join(os.environ['SUMO_HOME'], 'tools')
@@ -26,9 +25,10 @@ def main():
         traci.simulationStep()
         id = traci.trafficlight.getIDList()[0]
         print(id)
-        # get_road_info()
-        info= traci.trafficlight.getPhase(id)
-        print(info)
+        # traci.trafficlight.setPhase(id, (step % 3) + 1)
+        # print(traci.trafficlight.getPhase(id))
+        traci.trafficlight.setPhaseDuration(id, 10)
+        print(traci.trafficlight.getPhaseDuration(id))
         step += 1
     traci.close()
     sys.stdout.flush()
@@ -40,6 +40,5 @@ if __name__ == "__main__":
         sumoBinary = checkBinary('sumo')
     else:
         sumoBinary = checkBinary('sumo-gui')
-    traci.start([sumoBinary, "-c", "../data/cfg.sumocfg",
-                 "--tripinfo-output", "../data/tripinfo.xml"])
+    traci.start([sumoBinary, "-c", "C:/Users/14777/codeStation/TCSC/DataProcessing/data/2x2/cfg.sumocfg"])
     main()

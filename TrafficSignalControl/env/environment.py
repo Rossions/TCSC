@@ -41,10 +41,6 @@ class SumoEnvironment(object):
     # done (布尔值): 判断episode是否结束，即s’是否是最终状态？是，则done=True；否，则done=False。
     # info (字典): 一些辅助诊断信息（有助于调试，也可用于学习），一般用不到。
     def step(self, tls_id, action_phase, phase_duration):
-        # action = 0 信号灯相位不变；action = 1 信号灯相位改变
-        traci.trafficlight.setPhase(tls_id, action_phase)
-        traci.trafficlight.setPhaseDuration(tls_id, phase_duration)
-        traci.simulationStep()
         done = traci.simulation.getMinExpectedNumber() > 0
         info = traci.simulation.getTime()
         observation = get_road_info()
