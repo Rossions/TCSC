@@ -4,7 +4,7 @@ import optparse
 from sumolib import checkBinary
 import traci
 import random
-
+from reward import get_reward
 if 'SUMO_HOME' in os.environ:
     tools = os.path.join(os.environ['SUMO_HOME'], 'tools')
     sys.path.append(tools)
@@ -23,22 +23,20 @@ def get_options():
 def main():
     phase = [0, 1, 2, 3]
     duration = [5, 10]
+
     id = traci.trafficlight.getIDList()[0]
-    step = 0
     action_phase = random.choice(phase)
     action_duration = random.choice(duration)
     traci.trafficlight.setPhase(id, action_phase)
-    tag = step
+    step = action_duration
     while traci.simulation.getMinExpectedNumber() > 0:
-        traci.simulationStep()
+        traci.simulationStep(step)
+        print(get_reward(id))
+        action_phase = random.choice(phase)
+        action_duration = random.choice(duration)
+        traci.trafficlight.setPhase(id, action_phase)
 
-        if int(action_duration) == (step - tag):
-            tag = step
-            action_phase = random.choice(phase)
-            action_duration = random.choice(duration)
-            traci.trafficlight.setPhase(id, action_phase)
-
-        step += 1
+        step += action_duration
     traci.close()
     sys.stdout.flush()
 
