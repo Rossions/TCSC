@@ -3,8 +3,8 @@ import os
 import sys
 import optparse
 from sumolib import checkBinary
-
-
+from observation import get_observation
+from reward import get_reward
 # 判断sumo接口是否存在
 def get_options():
     optParser = optparse.OptionParser()
@@ -43,8 +43,8 @@ class SumoEnvironment(object):
     def step(self, tls_id, action_phase, phase_duration):
         done = traci.simulation.getMinExpectedNumber() > 0
         info = traci.simulation.getTime()
-        observation = get_road_info()
-        reward = None
+        observation = get_observation(tls_id)
+        reward = get_reward(tls_id)
         return observation, reward, done, info
 
     def sumo_close(self):

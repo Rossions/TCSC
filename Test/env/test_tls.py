@@ -5,6 +5,7 @@ from sumolib import checkBinary
 import traci
 import random
 from reward import get_reward
+
 if 'SUMO_HOME' in os.environ:
     tools = os.path.join(os.environ['SUMO_HOME'], 'tools')
     sys.path.append(tools)
@@ -25,18 +26,15 @@ def main():
     duration = [5, 10]
 
     id = traci.trafficlight.getIDList()[0]
-    action_phase = random.choice(phase)
-    action_duration = random.choice(duration)
-    traci.trafficlight.setPhase(id, action_phase)
-    step = action_duration
+    step = 0
+    print(traci.trafficlight.getAllProgramLogics(id))
     while traci.simulation.getMinExpectedNumber() > 0:
-        traci.simulationStep(step)
-        print(get_reward(id))
         action_phase = random.choice(phase)
         action_duration = random.choice(duration)
+        last_action_phase = traci.trafficlight.getPhase(id)
         traci.trafficlight.setPhase(id, action_phase)
-
         step += action_duration
+        traci.simulationStep(step)
     traci.close()
     sys.stdout.flush()
 

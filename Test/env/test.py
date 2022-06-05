@@ -24,7 +24,7 @@ def main():
     while traci.simulation.getMinExpectedNumber() > 0:
         traci.simulationStep()
         id = traci.trafficlight.getIDList()[0]
-        traci.simulation.
+        # traci.simulation.
         step += 1
     traci.close()
     sys.stdout.flush()

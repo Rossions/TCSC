@@ -1,5 +1,6 @@
 from traci import trafficlight
-
+from traci import simulation
+import traci
 # 如果交叉路口的速度低于 70km/h 的阈值（可通过选项tls.minor-left.max-speed 进行配置），
 # 则允许在迎面而来的直行交通同时左转，但必须让行。这称为 绿色小写，在状态定义中用小写的g表示。否则，
 # 左转流必须使用受保护的左转阶段.
@@ -11,8 +12,12 @@ from traci import trafficlight
 # 垂直于第一个方向的直线相位
 # 与第一个方向正交的方向的左转阶段（仅当有专用的左转车道时）
 # 如果有超过 4 条道路在交叉路口相遇，则会生成额外的绿灯阶段
-def get_observation(self):
-    traffic_light  = trafficlight.getIDList()
-    for id in traffic_light:
-
-
+def get_observation(self, tls_id):
+    current_phase = trafficlight.getPhase(tls_id)
+    waiting_vehicle_num = []
+    lane_list = trafficlight.getControlledLanes(tls_id)
+    for lane in lane_list:
+        waiting_vehicle_num.append(lane.getLastStepHaltingNumber(lane))
+    time = simulation.getTime()
+    observation = [[current_phase], waiting_vehicle_num, [time]]
+    return observation

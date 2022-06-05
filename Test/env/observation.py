@@ -14,7 +14,7 @@ import traci
 # 垂直于第一个方向的直线相位
 # 与第一个方向正交的方向的左转阶段（仅当有专用的左转车道时）
 # 如果有超过 4 条道路在交叉路口相遇，则会生成额外的绿灯阶段
-def get_observation(self, tls_id):
+def get_observation(tls_id):
     current_phase = trafficlight.getPhase(tls_id)
     waiting_vehicle_num = []
     lane_list = trafficlight.getControlledLanes(tls_id)
